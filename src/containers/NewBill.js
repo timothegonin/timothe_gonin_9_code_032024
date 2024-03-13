@@ -31,21 +31,23 @@ export default class NewBill {
 		formData.append("email", email);
 
 		console.log(allowedFileExtensions.includes(currentFileExtension));
-
-		// this.store
-		//   .bills()
-		//   .create({
-		//     data: formData,
-		//     headers: {
-		//       noContentType: true
-		//     }
-		//   })
-		//   .then(({fileUrl, key}) => {
-		//     console.log(fileUrl)
-		//     this.billId = key
-		//     this.fileUrl = fileUrl
-		//     this.fileName = fileName
-		//   }).catch(error => console.error(error))
+		allowedFileExtensions.includes(currentFileExtension)
+			? this.store
+					.bills()
+					.create({
+						data: formData,
+						headers: {
+							noContentType: true,
+						},
+					})
+					.then(({ fileUrl, key }) => {
+						console.log(fileUrl);
+						this.billId = key;
+						this.fileUrl = fileUrl;
+						this.fileName = fileName;
+					})
+					.catch((error) => console.error(error))
+			: alert("file extension problem, selected " + currentFileExtension);
 	};
 	handleSubmit = (e) => {
 		e.preventDefault();

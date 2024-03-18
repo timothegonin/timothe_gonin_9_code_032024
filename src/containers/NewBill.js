@@ -22,6 +22,7 @@ export default class NewBill {
 		const allowedFileExtensions = ["jpg", "jpeg", "png"];
 		const file = this.document.querySelector(`input[data-testid="file"]`)
 			.files[0];
+		const fileInput = this.document.querySelector(`input[data-testid="file"]`);
 		const filePath = e.target.value.split(/\\/g);
 		const fileName = filePath[filePath.length - 1];
 		const currentFileExtension = fileName.split(".").pop();
@@ -47,7 +48,8 @@ export default class NewBill {
 						this.fileName = fileName;
 					})
 					.catch((error) => console.error(error))
-			: alert("file extension problem, selected " + currentFileExtension);
+			: (alert("file extension problem, selected " + currentFileExtension),
+			  (fileInput.value = ""));
 	};
 	handleSubmit = (e) => {
 		e.preventDefault();

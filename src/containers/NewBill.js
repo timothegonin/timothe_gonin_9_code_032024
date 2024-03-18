@@ -20,6 +20,8 @@ export default class NewBill {
 	handleChangeFile = (e) => {
 		e.preventDefault();
 		const allowedFileExtensions = ["jpg", "jpeg", "png"];
+		const fileExtensionErrorMessage =
+			"L'extension de fichier choisi n'est pas valide.\nSeuls les fichiers au format JPG, JPEG PNG sont accéptés";
 		const file = this.document.querySelector(`input[data-testid="file"]`)
 			.files[0];
 		const fileInput = this.document.querySelector(`input[data-testid="file"]`);
@@ -48,8 +50,7 @@ export default class NewBill {
 						this.fileName = fileName;
 					})
 					.catch((error) => console.error(error))
-			: (alert("file extension problem, selected " + currentFileExtension),
-			  (fileInput.value = ""));
+			: (alert(`${fileExtensionErrorMessage}`), (fileInput.value = ""));
 	};
 	handleSubmit = (e) => {
 		e.preventDefault();

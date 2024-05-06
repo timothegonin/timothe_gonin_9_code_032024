@@ -86,12 +86,6 @@ export default class {
   }
 
   handleEditTicket(e, bill, bills) {
-    // const currentBill = e.currentTarget
-    // bills.forEach(b => {
-    //   $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
-    // })
-    // $(currentBill).css({ background: '#2A2B35' })
-    // $(currentBill).addClass('active');
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
     if (this.counter % 2 === 0) {

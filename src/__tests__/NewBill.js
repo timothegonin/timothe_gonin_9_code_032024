@@ -14,6 +14,14 @@ describe("Given I am connected as an employee", () => {
       document.body.innerHTML = html
       //to-do write assertion
       expect(screen.getByTestId("form-new-bill")).toBeTruthy();
+      expect(screen.getByTestId("expense-type")).toBeTruthy();
+      expect(screen.getByTestId("expense-name")).toBeTruthy();
+      expect(screen.getByTestId("datepicker")).toBeTruthy();
+      expect(screen.getByTestId("amount")).toBeTruthy();
+      expect(screen.getByTestId("vat")).toBeTruthy();
+      expect(screen.getByTestId("pct")).toBeTruthy();
+      expect(screen.getByTestId("commentary")).toBeTruthy();
+      expect(screen.getByTestId("file")).toBeTruthy();
     })
   })
 })

@@ -40,8 +40,6 @@ describe("Given I am connected as an employee", () => {
   })
   describe("When I am on Bills page and clicking on 'New bill' button" , () => {
     test("Then, 'New Bill' form should be rendered", () => {
-    
-      
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
@@ -52,6 +50,7 @@ describe("Given I am connected as an employee", () => {
       expect(getByTestId(document.body, 'btn-new-bill')).toBeTruthy()
       userEvent.click(button)
       expect(getByTestId(document.body, 'form-new-bill')).toBeTruthy()
+      expect(window.location.hash).toEqual('#employee/bill/new');
     })
   })
 })

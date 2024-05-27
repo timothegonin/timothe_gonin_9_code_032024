@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {getByTestId, screen, waitFor} from "@testing-library/dom"
+import {getAllByTestId, getByRole, getByTestId, screen, waitFor} from "@testing-library/dom"
 import userEvent from '@testing-library/user-event'
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
@@ -52,6 +52,21 @@ describe("Given I am connected as an employee", () => {
 
       expect(getByTestId(document.body, 'form-new-bill')).toBeTruthy()
       expect(window.location.hash).toEqual(ROUTES_PATH.NewBill);
+    })
+  })
+  describe("When I click on the eye icon of a bill", () => {
+    test("Then, the modal displaying the bill details should appear",() => {
+      document.body.innerHTML = BillsUI({ data: bills })
+      const handleClickIconEye = jest.fn(bills.handleClickIconEye)
+      const eyes = screen.getAllByTestId('icon-eye')
+      expect(eyes).toBeTruthy()
+      eyes.forEach((eye) =>  eye.addEventListener('click', handleClickIconEye))
+      userEvent.click(eyes[0])
+      expect(handleClickIconEye).toHaveBeenCalled()
+      
+      const modale = screen.getByTestId('modaleFile')
+      expect(modale).toBeTruthy()
+
     })
   })
 })

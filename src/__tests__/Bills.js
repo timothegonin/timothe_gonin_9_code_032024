@@ -55,7 +55,7 @@ describe("Given I am connected as an employee", () => {
     })
   })
   describe("When I click on the eye icon of a bill", () => {
-    test("Then, the modal displaying the bill details should appear",() => {
+    test("Then, the modal displaying the bill details should appear with the correct image source",() => {
       document.body.innerHTML = BillsUI({ data: bills })
       const bill = new Bills({
         document,
@@ -78,11 +78,13 @@ describe("Given I am connected as an employee", () => {
       
       iconEye.addEventListener('click', handleClickIconEye)
       userEvent.click(iconEye)
-      const modalBody = screen.getAllByAltText('Bill')
-
+      
+      const billUrl = iconEye.getAttribute('data-bill-url');
+      const img = modal.querySelector('img');
+      
       expect(handleClickIconEye).toHaveBeenCalled()      
       expect(modal.classList.contains('show')).toBeTruthy()
-      expect(modalBody).toBeTruthy()
+      expect(img.getAttribute('src')).toEqual(billUrl);
     })
   })
 })

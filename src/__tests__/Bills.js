@@ -57,16 +57,31 @@ describe("Given I am connected as an employee", () => {
   describe("When I click on the eye icon of a bill", () => {
     test("Then, the modal displaying the bill details should appear",() => {
       document.body.innerHTML = BillsUI({ data: bills })
-      const handleClickIconEye = jest.fn(bills.handleClickIconEye)
-      const eyes = screen.getAllByTestId('icon-eye')
-      expect(eyes).toBeTruthy()
-      eyes.forEach((eye) =>  eye.addEventListener('click', handleClickIconEye))
-      userEvent.click(eyes[0])
-      expect(handleClickIconEye).toHaveBeenCalled()
-      
-      const modale = screen.getByTestId('modaleFile')
-      expect(modale).toBeTruthy()
+      const bill = new Bills({
+        document,
+        onNavigate,
+        store: null,
+        bills,
+        localStorage: window.localStorage,
+      });
 
+      const modal = screen.getByTestId('modaleFile')
+
+      $.fn.modal = jest.fn(() => {
+        modal.classList.add("show");
+      });
+      
+      const eyes = screen.getAllByTestId('icon-eye')[0]
+      const handleClickIconEye = jest.fn(() => {
+        bill.handleClickIconEye(eyes);
+      });
+
+      expect(eyes).toBeTruthy()
+      eyes.addEventListener('click', handleClickIconEye)
+      userEvent.click(eyes)
+
+      expect(handleClickIconEye).toHaveBeenCalled()      
+      expect(modal).toBeTruthy()
     })
   })
 })

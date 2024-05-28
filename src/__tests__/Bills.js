@@ -82,6 +82,7 @@ describe("Given I am connected as an employee", () => {
 
       expect(handleClickIconEye).toHaveBeenCalled()      
       expect(modal).toBeTruthy()
+      expect(modal.classList.contains('show')).toBeTruthy()
     })
   })
 })

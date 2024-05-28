@@ -75,14 +75,14 @@ describe("Given I am connected as an employee", () => {
       const handleClickIconEye = jest.fn(() => {
         bill.handleClickIconEye(iconEye);
       });
-
-      expect(iconEye).toBeTruthy()
+      
       iconEye.addEventListener('click', handleClickIconEye)
       userEvent.click(iconEye)
+      const modalBody = screen.getAllByAltText('Bill')
 
       expect(handleClickIconEye).toHaveBeenCalled()      
-      expect(modal).toBeTruthy()
       expect(modal.classList.contains('show')).toBeTruthy()
+      expect(modalBody).toBeTruthy()
     })
   })
 })

@@ -65,20 +65,20 @@ describe("Given I am connected as an employee", () => {
         localStorage: window.localStorage,
       });
 
-      const modal = screen.getByTestId('modaleFile')
+      const modal = document.querySelector('#modaleFile')
 
       $.fn.modal = jest.fn(() => {
         modal.classList.add("show");
       });
       
-      const eyes = screen.getAllByTestId('icon-eye')[0]
+      const iconEye = screen.getAllByTestId('icon-eye')[0]
       const handleClickIconEye = jest.fn(() => {
-        bill.handleClickIconEye(eyes);
+        bill.handleClickIconEye(iconEye);
       });
 
-      expect(eyes).toBeTruthy()
-      eyes.addEventListener('click', handleClickIconEye)
-      userEvent.click(eyes)
+      expect(iconEye).toBeTruthy()
+      iconEye.addEventListener('click', handleClickIconEye)
+      userEvent.click(iconEye)
 
       expect(handleClickIconEye).toHaveBeenCalled()      
       expect(modal).toBeTruthy()

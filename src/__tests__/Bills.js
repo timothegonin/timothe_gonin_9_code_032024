@@ -88,3 +88,19 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
+
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate to Bills Page", ()=> {
+    test("fetches bills that have already been transmitted and are displayed", async () => {
+      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+
+      const billsList = await screen.getByTestId('tbody')
+      expect(billsList).toBeTruthy()
+    })
+  })
+})

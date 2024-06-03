@@ -98,9 +98,10 @@ describe("Given I am a user connected as Employee", () => {
       document.body.append(root)
       router()
       window.onNavigate(ROUTES_PATH.Bills)
-
+      await waitFor(() => screen.getByText("Mes notes de frais"))
       const billsList = await screen.getByTestId('tbody')
       expect(billsList).toBeTruthy()
+      expect(billsList.children.length).toEqual(4)
     })
   })
 })

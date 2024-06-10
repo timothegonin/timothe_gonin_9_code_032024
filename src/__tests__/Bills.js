@@ -109,16 +109,11 @@ describe("Given I am a user connected as Employee", () => {
     root.setAttribute("id", "root")
     document.body.appendChild(root)
     router()
+    window.onNavigate(ROUTES_PATH.Bills)
   })
 
   describe("When I navigate to Bills Page", ()=> {
     test("fetches bills that have already been transmitted and are displayed", async () => {
-      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.append(root)
-      router()
-      window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByText("Mes notes de frais"))
       const billsList = await screen.getByTestId('tbody')
       expect(billsList).toBeTruthy()

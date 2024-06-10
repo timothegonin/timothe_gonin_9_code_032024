@@ -93,6 +93,24 @@ describe("Given I am connected as an employee", () => {
 })
 
 describe("Given I am a user connected as Employee", () => {
+
+  beforeEach(() => {
+    jest.spyOn(mockStore, "bills")
+    Object.defineProperty(
+        window,
+        'localStorage',
+        { value: localStorageMock }
+    )
+    window.localStorage.setItem('user', JSON.stringify({
+      type: 'Employee',
+      email: "a@a"
+    }))
+    const root = document.createElement("div")
+    root.setAttribute("id", "root")
+    document.body.appendChild(root)
+    router()
+  })
+
   describe("When I navigate to Bills Page", ()=> {
     test("fetches bills that have already been transmitted and are displayed", async () => {
       localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
@@ -108,22 +126,6 @@ describe("Given I am a user connected as Employee", () => {
     })
   })
   describe("When an error occurus on API", () => {
-    beforeEach(() => {
-      jest.spyOn(mockStore, "bills")
-      Object.defineProperty(
-          window,
-          'localStorage',
-          { value: localStorageMock }
-      )
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee',
-        email: "a@a"
-      }))
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.appendChild(root)
-      router()
-    })
     test("fetches bills from an API and fails with 404 message error", async () => {
 
       mockStore.bills.mockImplementationOnce(() => {

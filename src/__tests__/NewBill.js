@@ -48,11 +48,13 @@ describe("Given I am connected as an employee", () => {
       const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
       jest.spyOn(window, 'alert').mockImplementation(() => {});
 
+      const fileInput = screen.getByTestId("file")
       const submitNewBillButton = document.querySelector('#btn-send-bill')
       submitNewBillButton.addEventListener('click', handleChangeFile)
       
       userEvent.click(submitNewBillButton)
       expect(window.alert).toHaveBeenCalledWith("L'extension de fichier choisi n'est pas valide.\nSeuls les fichiers au format JPG, JPEG PNG sont accéptés");
+      expect(fileInput.value).toBe('')
       expect(handleChangeFile).toHaveBeenCalled()
     })
   })

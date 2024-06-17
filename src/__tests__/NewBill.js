@@ -14,21 +14,20 @@ import userEvent from "@testing-library/user-event";
 
 
 describe("Given I am connected as an employee", () => {
+  beforeEach(() => {
+    Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+    window.localStorage.setItem('user', JSON.stringify({
+      type: 'Employee'
+    }))
+    const root = document.createElement("div")
+    root.setAttribute("id", "root")
+    document.body.append(root)
+    router()
+    window.onNavigate(ROUTES_PATH.NewBill)
+    const html = NewBillUI()
+    document.body.innerHTML = html
+  })
   describe("When I am on NewBill Page", () => {
-    beforeEach(() => {
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.append(root)
-      router()
-      window.onNavigate(ROUTES_PATH.NewBill)
-      const html = NewBillUI()
-      document.body.innerHTML = html
-    })
-
     test("Then the form elements should be present", () => {
       //to-do write assertion
       expect(screen.getByTestId("form-new-bill")).toBeTruthy();
@@ -41,7 +40,9 @@ describe("Given I am connected as an employee", () => {
       expect(screen.getByTestId("commentary")).toBeTruthy();
       expect(screen.getByTestId("file")).toBeTruthy();
     })
-    test("handleChangeFile TEST", () => {
+  })
+  describe('When I try to submit a new bill', () => {
+    test("Then a wrongly formatted file will return an error and reset the file entry", () => {
       const newBill = new NewBill({
         document, onNavigate, store: null,localStorage: window.localStorage
       })

@@ -2,15 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { screen } from "@testing-library/dom"
+import { screen , waitFor} from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import {localStorageMock} from "../__mocks__/localStorage.js";
 import router from "../app/Router.js";
 import { ROUTES_PATH} from "../constants/routes.js";
 import userEvent from "@testing-library/user-event";
-
-
+import mockStore from "../__mocks__/store"
 
 
 describe("Given I am connected as an employee", () => {
@@ -42,7 +41,7 @@ describe("Given I am connected as an employee", () => {
     })
   })
   describe('When I try to submit a new bill', () => {
-    test("Then a wrongly formatted file will return an error and reset the file entry", () => {
+    test("Then a wrongly formatted file will return an error and reset the file entry",  () => {
       const newBill = new NewBill({
         document, onNavigate, store: null,localStorage: window.localStorage
       })
@@ -50,10 +49,12 @@ describe("Given I am connected as an employee", () => {
       jest.spyOn(window, 'alert').mockImplementation(() => {});
 
       const fileInput = screen.getByTestId("file")
-      const submitNewBillButton = document.querySelector('#btn-send-bill')
-      submitNewBillButton.addEventListener('click', handleChangeFile)
+      const file = new File(["foo"], "foo.txt", {
+        type: "text/plain",
+      });
+      fileInput.addEventListener('change', handleChangeFile);
+      userEvent.upload(fileInput, file);
       
-      userEvent.click(submitNewBillButton)
       expect(window.alert).toHaveBeenCalledWith("L'extension de fichier choisi n'est pas valide.\nSeuls les fichiers au format JPG, JPEG PNG sont accéptés");
       expect(fileInput.value).toBe('')
       expect(handleChangeFile).toHaveBeenCalled()

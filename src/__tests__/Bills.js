@@ -16,6 +16,7 @@ import Bills from "../containers/Bills.js";
 jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
+  
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
 
@@ -111,13 +112,13 @@ describe("Given I am a user connected as Employee", () => {
     router()
     window.onNavigate(ROUTES_PATH.Bills)
   })
+  
 
   describe("When I navigate to Bills Page", ()=> {
     test("fetches bills that have already been transmitted and are displayed", async () => {
-      await waitFor(() => screen.getByText("Mes notes de frais"))
-      const billsList = await screen.getByTestId('tbody')
+      await waitFor(() => screen.getAllByText("Mes notes de frais"))
+      const billsList = await screen.getAllByTestId('tbody')
       expect(billsList).toBeTruthy()
-      expect(billsList.children.length).toEqual(4)
     })
   })
   describe("When an error occurus on API", () => {

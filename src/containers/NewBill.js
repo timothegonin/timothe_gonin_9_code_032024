@@ -33,7 +33,7 @@ export default class NewBill {
 		formData.append("file", file);
 		formData.append("email", email);
 
-		console.log(allowedFileExtensions.includes(currentFileExtension));
+		// console.log(allowedFileExtensions.includes(currentFileExtension));
 		allowedFileExtensions.includes(currentFileExtension)
 			? this.store
 					.bills()

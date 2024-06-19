@@ -59,5 +59,25 @@ describe("Given I am connected as an employee", () => {
       expect(fileInput.value).toBe('')
       expect(handleChangeFile).toHaveBeenCalled()
     })
+    test("Then a correctly formatted file will be accepted and create a new bill",  () => {
+      const newBill = new NewBill({
+        document, onNavigate, store: null,localStorage: window.localStorage
+      })
+      const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
+      const mockCreate = jest.spyOn(mockStore.bills(), 'create').mockImplementationOnce(() =>
+        Promise.resolve({ fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234' })
+      );
+
+      const fileInput = screen.getByTestId("file")
+      const file = new File(["foo"], "foo.png", {
+        type: "image/png",
+      });
+      fileInput.addEventListener('change', handleChangeFile);
+      userEvent.upload(fileInput, file);
+      
+      expect(mockCreate).toHaveBeenCalled;
+      expect(fileInput.value).toBe('')
+      expect(handleChangeFile).toHaveBeenCalled()
+    })
   })
 })

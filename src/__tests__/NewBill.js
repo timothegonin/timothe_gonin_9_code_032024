@@ -92,5 +92,17 @@ describe("Given I am connected as an employee", () => {
       expect(window.alert).not.toHaveBeenCalled();
       expect(handleChangeFileMock).toHaveBeenCalled()
     })
+    test("Then the new bill must be submited",() => {
+      const newBill = new NewBill({
+        document, onNavigate, store: mockStore,localStorage: window.localStorage
+      })
+
+      const handleSubmitMock = jest.fn((e) => newBill.handleSubmit(e))
+      const newBillForm = screen.getByTestId("form-new-bill")
+      newBillForm.addEventListener("submit", handleSubmitMock)
+
+      fireEvent.submit(newBillForm)
+      expect(handleSubmitMock).toHaveBeenCalled()
+    })
   })
 })

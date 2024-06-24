@@ -66,25 +66,31 @@ describe("Given I am connected as an employee", () => {
       expect(fileInput.value).toBe('')
       expect(handleChangeFileMock).toHaveBeenCalled()
     })
-    // test("Then a correctly formatted file will be accepted and create a new bill",  () => {
-    //   const newBill = new NewBill({
-    //     document, onNavigate, store: mockStore,localStorage: window.localStorage
-    //   })
-    //   const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
-    //   const mockCreate = jest.spyOn(mockStore.bills(), 'create').mockImplementationOnce(() =>
-    //     Promise.resolve({ fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234' })
-    //   );
+    test("Then a correctly formatted file will be accepted",  async () => {
+      const newBill = new NewBill({
+        document, onNavigate, store: mockStore,localStorage: window.localStorage
+      })
 
-    //   const fileInput = screen.getByTestId("file")
-    //   const file = new File(["foo"], "foo.png", {
-    //     type: "image/png",
-    //   });
-    //   fileInput.addEventListener('change', handleChangeFile);
-    //   userEvent.upload(fileInput, file);
+      const file = new File(["foo"], "testPng.png", {
+        type: "image/png",
+      });
+      const fileInput = screen.getByTestId("file")
+      const preventDefault = jest.fn()
+      const windowAlertMock = jest.fn()
+      window.alert = windowAlertMock
+      const event = {
+        preventDefault,
+        target:{files: [file]}
+      }
+
+      const handleChangeFileMock = jest.fn((e) => newBill.handleChangeFile(event))
       
-    //   expect(mockCreate).toHaveBeenCalled;
-    //   expect(fileInput.value).toBe('')
-    //   expect(handleChangeFile).toHaveBeenCalled()
-    // })
+      fileInput.addEventListener('change', handleChangeFileMock);
+      await waitFor (() => fireEvent.change(fileInput, event));
+      
+      expect(newBill.fileName).toBe("testPng.png");
+      expect(window.alert).not.toHaveBeenCalled();
+      expect(handleChangeFileMock).toHaveBeenCalled()
+    })
   })
 })

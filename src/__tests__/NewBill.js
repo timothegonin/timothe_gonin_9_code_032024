@@ -138,5 +138,18 @@ describe("API error", () => {
     expect(console.error).toHaveBeenCalled();
     expect(console.error).toHaveBeenCalledWith(Error("Erreur 404"));
   });
-  test("POST => API ")
+  test("POST => API fails with 500 message error", async () => {
+    const create = mockStore.bills.mockImplementationOnce(() => {
+      return {
+        create: () => {
+          return Promise.reject(new Error("Erreur 500"));
+        },
+      };
+    });
+
+    window.onNavigate(ROUTES_PATH.NewBill);		
+    expect(create).toHaveBeenCalled();
+    await new Promise(process.nextTick);
+    expect(console.error).toHaveBeenCalledWith(Error("Erreur 500"));
+  });
 })

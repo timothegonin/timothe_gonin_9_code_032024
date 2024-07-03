@@ -19,39 +19,43 @@ export default class NewBill {
 	}
 	handleChangeFile = (e) => {
 		e.preventDefault();
-		const allowedFileExtensions = ["jpg", "jpeg", "png"];
-		const fileExtensionErrorMessage =
-			"L'extension de fichier choisi n'est pas valide.\nSeuls les fichiers au format JPG, JPEG PNG sont accéptés";
-		const file = this.document.querySelector(`input[data-testid="file"]`)
-			.files[0];
-		const fileInput = this.document.querySelector(`input[data-testid="file"]`);
-		const filePath = e.target.value.split(/\\/g);
-		const fileName = filePath[filePath.length - 1];
-		const currentFileExtension = fileName.split(".").pop();
+		const input = this.document.querySelector(`input[data-testid="file"]`);
+		const file = e.target.files[0];
+		const fileName = file.name;
+
+		const btnSubmit = this.document.getElementById("btn-send-bill");
+		if (
+			fileName.split(".")[1] === "png" ||
+			fileName.split(".")[1] === "jpg" ||
+			fileName.split(".")[1] === "jpeg"
+		) {
+			btnSubmit.removeAttribute("disabled");
+		} else {
+			alert("L'extension de fichier choisi n'est pas valide.\nSeuls les fichiers au format JPG, JPEG PNG sont accéptés");
+			btnSubmit.setAttribute("disabled", true);
+			input.value = "";
+		}
 		const formData = new FormData();
 		const email = JSON.parse(localStorage.getItem("user")).email;
 		formData.append("file", file);
 		formData.append("email", email);
 
-		console.log(allowedFileExtensions.includes(currentFileExtension));
-		allowedFileExtensions.includes(currentFileExtension)
-			? this.store
-					.bills()
-					.create({
-						data: formData,
-						headers: {
-							noContentType: true,
-						},
-					})
-					.then(({ fileUrl, key }) => {
-						console.log(fileUrl);
-						this.billId = key;
-						this.fileUrl = fileUrl;
-						this.fileName = fileName;
-					})
-					.catch((error) => console.error(error))
-			: (alert(`${fileExtensionErrorMessage}`), (fileInput.value = ""));
+		this.store
+			.bills()
+			.create({
+				data: formData,
+				headers: {
+					noContentType: true,
+				},
+			})
+			.then(({ fileUrl, key }) => {
+				this.billId = key;
+				this.fileUrl = fileUrl;
+				this.fileName = fileName;
+			})
+			.catch((error) => console.error(error));
 	};
+	
 	handleSubmit = (e) => {
 		e.preventDefault();
 		console.log(
@@ -82,6 +86,7 @@ export default class NewBill {
 	};
 
 	// not need to cover this function by tests
+	/* istanbul ignore next */
 	updateBill = (bill) => {
 		if (this.store) {
 			this.store

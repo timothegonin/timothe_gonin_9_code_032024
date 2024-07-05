@@ -15,7 +15,8 @@ describe("Given I am connected as an employee", () => {
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', { value: localStorageMock })
     window.localStorage.setItem('user', JSON.stringify({
-      type: 'Employee'
+      type: 'Employee',
+      email:"a@a"
     }))
     const root = document.createElement("div")
     root.setAttribute("id", "root")
@@ -25,6 +26,7 @@ describe("Given I am connected as an employee", () => {
     const html = NewBillUI()
     document.body.innerHTML = html
   })
+  
   describe("When I am on NewBill Page", () => {
     test("Then the form elements should be present", () => {
       //to-do write assertion
@@ -66,6 +68,7 @@ describe("Given I am connected as an employee", () => {
       expect(fileInput.value).toBe('')
       expect(handleChangeFileMock).toHaveBeenCalled()
     })
+
     test("Then a correctly formatted file will be accepted",  async () => {
       const newBill = new NewBill({
         document, onNavigate, store: mockStore,localStorage: window.localStorage
@@ -92,6 +95,7 @@ describe("Given I am connected as an employee", () => {
       expect(window.alert).not.toHaveBeenCalled();
       expect(handleChangeFileMock).toHaveBeenCalled()
     })
+
     test("Then the new bill must be submited",() => {
       const newBill = new NewBill({
         document, onNavigate, store: mockStore,localStorage: window.localStorage
@@ -105,51 +109,54 @@ describe("Given I am connected as an employee", () => {
       expect(handleSubmitMock).toHaveBeenCalled()
     })
   })
-})
-describe("API error", () => {
-  beforeEach(() => {
-    jest.spyOn(mockStore, "bills");
-    jest.spyOn(console, "error");
-    Object.defineProperty(window, "localStorage", { value: localStorageMock });
-    window.localStorage.setItem(
-      "user",
-      JSON.stringify({
-        type: "Employee",
-        email: "a@a",
-      }),
-    );
-    const root = document.createElement("div");
-    root.setAttribute("id", "root");
-    document.body.appendChild(root);
-    router();
-  });
-  test("POST => API fails with 404 message error", async () => {
-    const create = mockStore.bills.mockImplementationOnce(() => {
-      return {
-        create: () => {
-          return Promise.reject(new Error("Erreur 404"));
-        },
-      };
+
+  describe("When submitting a POST request to the API, and if an error occurs", () => {
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills");
+      jest.spyOn(console, "error");
+      Object.defineProperty(window, "localStorage", { value: localStorageMock });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+          email: "a@a",
+        }),
+      );
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.appendChild(root);
+      router();
     });
 
-    window.onNavigate(ROUTES_PATH.NewBill);
-    expect(create).toHaveBeenCalled();
-    await new Promise(process.nextTick);
-    expect(console.error).toHaveBeenCalled();
-    expect(console.error).toHaveBeenCalledWith(Error("Erreur 404"));
-  });
-  test("POST => API fails with 500 message error", async () => {
-    const create = mockStore.bills.mockImplementationOnce(() => {
-      return {
-        create: () => {
-          return Promise.reject(new Error("Erreur 500"));
-        },
-      };
+    test("Then a 404 error is received", async () => {
+      const create = mockStore.bills.mockImplementationOnce(() => {
+        return {
+          create: () => {
+            return Promise.reject(new Error("Erreur 404"));
+          },
+        };
+      });
+  
+      window.onNavigate(ROUTES_PATH.NewBill);
+      expect(create).toHaveBeenCalled();
+      await new Promise(process.nextTick);
+      expect(console.error).toHaveBeenCalled();
+      expect(console.error).toHaveBeenCalledWith(Error("Erreur 404"));
     });
 
-    window.onNavigate(ROUTES_PATH.NewBill);		
-    expect(create).toHaveBeenCalled();
-    await new Promise(process.nextTick);
-    expect(console.error).toHaveBeenCalledWith(Error("Erreur 500"));
-  });
+    test("Then a 500 error is received", async () => {
+      const create = mockStore.bills.mockImplementationOnce(() => {
+        return {
+          create: () => {
+            return Promise.reject(new Error("Erreur 500"));
+          },
+        };
+      });
+  
+      window.onNavigate(ROUTES_PATH.NewBill);		
+      expect(create).toHaveBeenCalled();
+      await new Promise(process.nextTick);
+      expect(console.error).toHaveBeenCalledWith(Error("Erreur 500"));
+    });
+  })
 })

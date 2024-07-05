@@ -2,8 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {getAllByTestId, getByRole, getByTestId, screen, waitFor} from "@testing-library/dom"
-import userEvent from '@testing-library/user-event'
+import {fireEvent,getByTestId, screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
@@ -16,10 +15,8 @@ import Bills from "../containers/Bills.js";
 jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
-  
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
-
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -34,6 +31,7 @@ describe("Given I am connected as an employee", () => {
       //to-do write expect expression (OK)
       expect(windowIcon.classList).toContain('active-icon')
     })
+
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
@@ -42,6 +40,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
   })
+
   describe("When I am on Bills page and clicking on 'New bill' button" , () => {
     test("Then, the 'New Bill' form should render and the URL should update on button click", () => {
       const root = document.createElement("div")
@@ -52,12 +51,13 @@ describe("Given I am connected as an employee", () => {
       const button = screen.getByTestId('btn-new-bill')
       
       expect(getByTestId(document.body, 'btn-new-bill')).toBeTruthy()
-      userEvent.click(button)
+      fireEvent.click(button)
 
       expect(getByTestId(document.body, 'form-new-bill')).toBeTruthy()
       expect(window.location.hash).toEqual(ROUTES_PATH.NewBill);
     })
   })
+
   describe("When I click on the eye icon of a bill", () => {
     test("Then, the modal displaying the bill details should appear with the correct image source",() => {
       document.body.innerHTML = BillsUI({ data: bills })
@@ -81,7 +81,7 @@ describe("Given I am connected as an employee", () => {
       });
       
       iconEye.addEventListener('click', handleClickIconEye)
-      userEvent.click(iconEye)
+      fireEvent.click(iconEye)
       
       const billUrl = iconEye.getAttribute('data-bill-url');
       const img = modal.querySelector('img');
@@ -94,7 +94,6 @@ describe("Given I am connected as an employee", () => {
 })
 
 describe("Given I am a user connected as Employee", () => {
-
   beforeEach(() => {
     jest.spyOn(mockStore, "bills")
     Object.defineProperty(
@@ -112,7 +111,6 @@ describe("Given I am a user connected as Employee", () => {
     router()
     window.onNavigate(ROUTES_PATH.Bills)
   })
-  
 
   describe("When I navigate to Bills Page", ()=> {
     test("fetches bills that have already been transmitted and are displayed", async () => {
@@ -121,21 +119,23 @@ describe("Given I am a user connected as Employee", () => {
       expect(billsList).toBeTruthy()
     })
   })
-  describe("When an error occurus on API", () => {
-    test("fetches bills from an API and fails with 404 message error", async () => {
 
+  describe("When an error occurus on API", () => {
+    test("Then fetches bills from an API and fails with a 404 error", async () => {
       mockStore.bills.mockImplementationOnce(() => {
         return {
           list : () =>  {
             return Promise.reject(new Error("Erreur 404"))
           }
-        }})
+        }
+      })
       window.onNavigate(ROUTES_PATH.Bills)
       await new Promise(process.nextTick);
       const message = await screen.getByText(/Erreur 404/)
       expect(message).toBeTruthy()
     })
-    test("fetches messages from API and fails with 500 message error", async () => {
+
+    test("Then fetches messages from the API and fails with a 500 error", async () => {
       mockStore.bills.mockImplementationOnce(() => {
         return {
           list : () => {
